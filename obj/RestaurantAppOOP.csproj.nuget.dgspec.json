@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\RestaurantAppOOP\\RestaurantAppOOP.csproj": {}
+    "D:\\RestaurantApp\\RestaurantOOP\\RestaurantAppOOP.csproj": {}
   },
   "projects": {
-    "D:\\RestaurantAppOOP\\RestaurantAppOOP.csproj": {
+    "D:\\RestaurantApp\\RestaurantOOP\\RestaurantAppOOP.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\RestaurantAppOOP\\RestaurantAppOOP.csproj",
+        "projectUniqueName": "D:\\RestaurantApp\\RestaurantOOP\\RestaurantAppOOP.csproj",
         "projectName": "RestaurantAppOOP",
-        "projectPath": "D:\\RestaurantAppOOP\\RestaurantAppOOP.csproj",
+        "projectPath": "D:\\RestaurantApp\\RestaurantOOP\\RestaurantAppOOP.csproj",
         "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "D:\\RestaurantAppOOP\\obj\\",
+        "outputPath": "D:\\RestaurantApp\\RestaurantOOP\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "ConsoleTables": {
+              "target": "Package",
+              "version": "[2.4.2, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.4, )"

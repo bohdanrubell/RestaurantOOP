@@ -24,7 +24,7 @@ public partial class RestaurantContext : DbContext
     public virtual DbSet<Waiter> Waiters { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\RestaurantAppOOP\\DatabaseOfProgram.mdf;Integrated Security=True");
+        => optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\RestaurantApp\\RestaurantOOP\\DatabaseOfProgram.mdf;Integrated Security=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

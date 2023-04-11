@@ -29,6 +29,8 @@ public class MainClass
                     menuForProgram.orderProcessing();
                     break;
                 case 2:
+                    Console.Clear();
+                    menuForProgram.menuRestaurantControl();
                     break;
                 case 3:
                     //В розробці
