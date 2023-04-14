@@ -9,6 +9,7 @@ public partial class RestaurantContext : DbContext
 {
     public RestaurantContext()
     {
+        Database.EnsureCreated();
     }
 
     public RestaurantContext(DbContextOptions<RestaurantContext> options)
@@ -25,7 +26,8 @@ public partial class RestaurantContext : DbContext
     public virtual DbSet<Waiter> Waiters { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\RestaurantApp\\RestaurantOOP\\db\\DatabaseOfProgram.mdf;Integrated Security=True");
+        => optionsBuilder.UseSqlServer(
+            @"Server=(LocalDB)\MSSQLLocalDB;Database=RestaurantDB;Trusted_Connection=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

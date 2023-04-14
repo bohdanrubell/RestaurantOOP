@@ -15,12 +15,12 @@ public class MainClass
         while (choiceGeneral != 4)
         {
 
-            Console.WriteLine("МЕНЮ");
-            Console.WriteLine("1. Обробка замовлень");
-            Console.WriteLine("2. Управління меню");
-            Console.WriteLine("3. Управління офіціантами");
-            Console.WriteLine("4. Вийти з програми");
-            Console.Write("Ваш вибір: ");
+            Console.WriteLine("Menu");
+            Console.WriteLine("1. Order processing");
+            Console.WriteLine("2. Menu management");
+            Console.WriteLine("3. Management of waiters");
+            Console.WriteLine("4. Exit the program");
+            Console.Write("Your choice: ");
             choiceGeneral = Convert.ToInt32(Console.ReadLine());
 
             switch (choiceGeneral)
@@ -37,10 +37,10 @@ public class MainClass
                     MenuForProgram.waitersControl();
                     break;
                 case 4:
-                    Console.WriteLine("До побачення!");
+                    Console.WriteLine("Goodbye!");
                     break;
                 default:
-                    Console.WriteLine("Невірний вибір. Спробуйте ще раз.");
+                    Console.WriteLine("Wrong choice. Try again.");
                     break;
             }
             Console.WriteLine();
