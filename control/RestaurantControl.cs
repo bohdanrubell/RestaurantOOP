@@ -34,6 +34,19 @@ namespace RestaurantAppOOP.control;
     {
         dao.DeleteOrder(orderId);
     }
-    
-    
+
+    public void UpdateWOrder(int orderID, string newName)
+    {
+        dao.UpdateWaiterNameOrder(orderID,newName);
     }
+
+    public List<OrderedDish> GetOrderedDishes(int orderID)
+    {
+        return dao.GetOrderedDishesForOrder(orderID);
+    }
+
+    public void UpdateList(int ordId, Dictionary<string, int> nDis)
+    {
+        dao.UpdateListOfDishes(ordId,nDis);
+    }
+}

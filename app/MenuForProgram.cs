@@ -20,15 +20,14 @@ namespace RestaurantAppOOP.app
     {
         public static void orderProcessing()
         {
-            
             RestaurantControl control = RestaurantControl.getInstance();
             Console.OutputEncoding = Encoding.UTF8;
             int choice = 0;
-            while (choice != 5)
+            while (choice != 6)
             {
                 PrintOrderTable();
-               Console.Write("Make a choice:");
-               choice = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Make a choice:");
+                choice = Convert.ToInt32(Console.ReadLine());
 
                 switch (choice)
                 {
@@ -48,9 +47,11 @@ namespace RestaurantAppOOP.app
                         Console.Write("Enter the order number you want to delete:");
                         int n = int.Parse(Console.ReadLine());
                         control.DeleteTheOrder(n);
-
                         break;
                     case 5:
+                        OrderMethods.UpdateOrder();
+                        break;
+                    case 6:
                         break;
                     default:
                         Console.WriteLine("Wrong choice. Try again.");
@@ -117,8 +118,6 @@ namespace RestaurantAppOOP.app
 
         public static void waitersControl()
         {
-            
-            
             int choice = 0;
             while (choice != 3)
             {
@@ -152,26 +151,30 @@ namespace RestaurantAppOOP.app
         private static void PrintOrderTable()
         {
             List<string> orderItems = new List<string>
-                {   "1. Create a new order",
-                    "2. Display information about a certain order",
-                    "3. Display a list of available orders",
-                    "4. Deleting an order",
-                    "5. Return to the main menu" };
+            {
+                "1. Create a new order",
+                "2. Display information about a certain order",
+                "3. Display a list of available orders",
+                "4. Deleting an order",
+                "5. Update the order",
+                "6.Return to the main menu"
+            };
             ConsoleTableBuilder.From(orderItems)
                 .WithCharMapDefinition(
                     CharMapDefinition.FramePipDefinition,
-                    new Dictionary<HeaderCharMapPositions, char> {
-                        {HeaderCharMapPositions.TopLeft, '?' },
-                        {HeaderCharMapPositions.TopCenter, '?' },
-                        {HeaderCharMapPositions.TopRight, '?' },
-                        {HeaderCharMapPositions.BottomLeft, '?' },
-                        {HeaderCharMapPositions.BottomCenter, '?' },
-                        {HeaderCharMapPositions.BottomRight, '?' },
-                        {HeaderCharMapPositions.BorderTop, '?' },
-                        {HeaderCharMapPositions.BorderRight, '?' },
-                        {HeaderCharMapPositions.BorderBottom, '?' },
-                        {HeaderCharMapPositions.BorderLeft, '?' },
-                        {HeaderCharMapPositions.Divider, '?' },
+                    new Dictionary<HeaderCharMapPositions, char>
+                    {
+                        { HeaderCharMapPositions.TopLeft, '?' },
+                        { HeaderCharMapPositions.TopCenter, '?' },
+                        { HeaderCharMapPositions.TopRight, '?' },
+                        { HeaderCharMapPositions.BottomLeft, '?' },
+                        { HeaderCharMapPositions.BottomCenter, '?' },
+                        { HeaderCharMapPositions.BottomRight, '?' },
+                        { HeaderCharMapPositions.BorderTop, '?' },
+                        { HeaderCharMapPositions.BorderRight, '?' },
+                        { HeaderCharMapPositions.BorderBottom, '?' },
+                        { HeaderCharMapPositions.BorderLeft, '?' },
+                        { HeaderCharMapPositions.Divider, '?' },
                     })
                 .WithTitle("Order menu")
                 .ExportAndWriteLine(TableAligntment.Left);
@@ -180,26 +183,27 @@ namespace RestaurantAppOOP.app
         private static void PrintMenuTable()
         {
             List<string> menuItems = new List<string>
-            {  "1. Display the restaurant menu",
+            {
+                "1. Display the restaurant menu",
                 "2. Change the price of a dish",
                 "3. Return to the main menu"
-                
             };
             ConsoleTableBuilder.From(menuItems)
                 .WithCharMapDefinition(
                     CharMapDefinition.FramePipDefinition,
-                    new Dictionary<HeaderCharMapPositions, char> {
-                        {HeaderCharMapPositions.TopLeft, '?' },
-                        {HeaderCharMapPositions.TopCenter, '?' },
-                        {HeaderCharMapPositions.TopRight, '?' },
-                        {HeaderCharMapPositions.BottomLeft, '?' },
-                        {HeaderCharMapPositions.BottomCenter, '?' },
-                        {HeaderCharMapPositions.BottomRight, '?' },
-                        {HeaderCharMapPositions.BorderTop, '?' },
-                        {HeaderCharMapPositions.BorderRight, '?' },
-                        {HeaderCharMapPositions.BorderBottom, '?' },
-                        {HeaderCharMapPositions.BorderLeft, '?' },
-                        {HeaderCharMapPositions.Divider, '?' },
+                    new Dictionary<HeaderCharMapPositions, char>
+                    {
+                        { HeaderCharMapPositions.TopLeft, '?' },
+                        { HeaderCharMapPositions.TopCenter, '?' },
+                        { HeaderCharMapPositions.TopRight, '?' },
+                        { HeaderCharMapPositions.BottomLeft, '?' },
+                        { HeaderCharMapPositions.BottomCenter, '?' },
+                        { HeaderCharMapPositions.BottomRight, '?' },
+                        { HeaderCharMapPositions.BorderTop, '?' },
+                        { HeaderCharMapPositions.BorderRight, '?' },
+                        { HeaderCharMapPositions.BorderBottom, '?' },
+                        { HeaderCharMapPositions.BorderLeft, '?' },
+                        { HeaderCharMapPositions.Divider, '?' },
                     })
                 .WithTitle("Menu control")
                 .ExportAndWriteLine(TableAligntment.Left);

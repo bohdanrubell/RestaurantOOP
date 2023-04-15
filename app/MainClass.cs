@@ -1,4 +1,7 @@
-﻿using RestaurantAppOOP.app;
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantAppOOP.app;
+using RestaurantAppOOP.db;
+using RestaurantAppOOP.models;
 
 public class MainClass
 {
@@ -6,6 +9,7 @@ public class MainClass
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         GeneralMenu(); // Запуск основного меню
+
     }
 
     public static void GeneralMenu()
