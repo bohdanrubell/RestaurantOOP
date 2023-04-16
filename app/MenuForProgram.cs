@@ -64,9 +64,10 @@ namespace RestaurantAppOOP.app
 
         public static void menuRestaurantControl()
         {
+            MenuControl dao = MenuControl.getInstance();
             Console.OutputEncoding = Encoding.UTF8;
             int choice = 0;
-            while (choice != 3)
+            while (choice != 4)
             {
                 PrintMenuTable();
                 choice = Convert.ToInt32(Console.ReadLine());
@@ -105,7 +106,22 @@ namespace RestaurantAppOOP.app
                         Console.WriteLine("The price has been successfully changed.");
                         break;
                     case 3:
-                        Console.Clear();
+                        Console.Write("Enter the new item name: ");
+                        string name = Console.ReadLine();
+                        Console.Write("Enter the description (if you want it): ");
+                        string discription = Console.ReadLine();
+                        Console.Write("Enter the cost new dish: ");
+                        decimal costItem = decimal.Parse(Console.ReadLine());
+
+                        if (discription == null)
+                        {
+                            dao.AddNewItem(name,costItem);
+                        }
+                        else
+                        {
+                            dao.AddNewItem(name,discription,costItem);
+                        }
+                        Console.WriteLine("The item has been successfully added.");
                         break;
                     default:
                         Console.WriteLine("Wrong choice. Try again.");
@@ -186,7 +202,8 @@ namespace RestaurantAppOOP.app
             {
                 "1. Display the restaurant menu",
                 "2. Change the price of a dish",
-                "3. Return to the main menu"
+                "3. Add the new item",
+                "4. Return to the main menu"
             };
             ConsoleTableBuilder.From(menuItems)
                 .WithCharMapDefinition(
