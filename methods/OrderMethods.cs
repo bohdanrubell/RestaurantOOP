@@ -26,8 +26,8 @@ public class OrderMethods
                 DateOrder = DateTime.Now
             };
             var dishes = new Dictionary<string, int>();
-            Console.WriteLine(
-                "Enter the name of the dish and the quantity (for example: Borscht 1), or enter 'end' to complete the entry: ");
+            Console.Write(
+                "Enter the name of the dish or enter 'end' to complete the entry: ");
             while (true)
             {
                 string inputMenu = Console.ReadLine();
@@ -36,22 +36,17 @@ public class OrderMethods
                 {
                     break;
                 }
-
-                string[] menuParts = inputMenu.Split(' ');
-
-                if (menuParts.Length != 2 || !int.TryParse(menuParts[1], out int quantity))
+                
+                Console.Write("Enter the quantity of dish: ");
+                int number = int.Parse(Console.ReadLine());
+                
+                if (dishes.ContainsKey(inputMenu))
                 {
-                    Console.WriteLine("Invalid input format. Enter the dish name and quantity separated by a space.");
-                    continue;
-                }
-
-                if (dishes.ContainsKey(menuParts[0]))
-                {
-                    dishes[menuParts[0]] += quantity;
+                    dishes[inputMenu] += number;
                 }
                 else
                 {
-                    dishes.Add(menuParts[0], quantity);
+                    dishes.Add(inputMenu, number);
                 }
             }
 
@@ -130,36 +125,41 @@ public class OrderMethods
 
     public static void UpdateOrder()
     {
+        Console.Write("Enter the ID order:");
+        int orderID = int.Parse(Console.ReadLine());
         RestaurantControl dao = RestaurantControl.getInstance();
         Console.WriteLine("What do you want to update?");
         Console.WriteLine("1. Waiter`s name");
         Console.WriteLine("2.Add new dishes in order");
         Console.WriteLine("3.Update dishes in order");
         Console.WriteLine("4.Delete dishes in order");
+        Console.WriteLine("5. Return to menu");
 
         int ch = int.Parse(Console.ReadLine());
         switch (ch)
         {
             case 1:
-                Console.Write("Enter the order id:  ");
-                int id = int.Parse(Console.ReadLine());
-                Console.Write("Enter the new waiter name:  ");
+                Console.Write("Enter the new waiter name: ");
                 string newWaiter = Console.ReadLine();
-                dao.UpdateWOrder(id, newWaiter);
+                dao.UpdateWOrder(orderID, newWaiter);
                 break;
             case 2:
-                List<OrderedDish> dd = dao.GetOrderedDishes(8);
+                List<OrderedDish> dd = dao.GetOrderedDishes(orderID);
                 Dictionary<string, int> newItems = new Dictionary<string, int>();
                 foreach (var d in dd)
                 {
                     newItems.Add(d.IdMenuNavigation.Name,d.Number);
                 }
+                
+                Console.WriteLine("Order menu now:");
+                Console.WriteLine("======================");
                 foreach (var d in dd)
                 {
                     Console.WriteLine($"{d.IdMenuNavigation.Name } X  {d.Number}");
                 }
+                Console.WriteLine("======================");
                 Console.WriteLine(
-                    "Enter the name of the dish and the quantity (for example: Borscht 1), or enter 'end' to complete the entry: ");
+                    "Enter the name of the dish or enter 'end' to complete the entry: ");
                 while (true)
                 {
                     string inputMenu = Console.ReadLine();
@@ -168,31 +168,26 @@ public class OrderMethods
                     {
                         break;
                     }
+                Console.WriteLine("Enter the quantity of dish: ");
+                    int quant = int.Parse(Console.ReadLine());
 
-                    string[] menuParts = inputMenu.Split(' ');
-
-                    if (menuParts.Length != 2 || !int.TryParse(menuParts[1], out int quantity))
+                    if (newItems.ContainsKey(inputMenu))
                     {
-                        Console.WriteLine(
-                            "Invalid input format. Enter the dish name and quantity separated by a space.");
-                        continue;
-                    }
-
-                    if (newItems.ContainsKey(menuParts[0]))
-                    {
-                        newItems[menuParts[0]] += quantity;
+                        newItems[inputMenu] += quant;
                     }
                     else
                     {
-                        newItems.Add(menuParts[0], quantity);
+                        newItems.Add(inputMenu, quant);
                     }
-                    dao.UpdateList(8,newItems);
+                    dao.UpdateList(orderID,newItems);
                 }
 
                 break;
             case 3:
+                updateQuantityDishesInOrder(orderID);
                 break;
             case 4:
+                deleleDishesInOrder(orderID);
                 break;
             case 5:
                 break;
@@ -200,7 +195,79 @@ public class OrderMethods
                 Console.WriteLine("Error.Try again.");
                 break;
         }
-    } 
+    }
+
+    private static void updateQuantityDishesInOrder(int orderID)
+    {
+        RestaurantControl dao = RestaurantControl.getInstance();
+        List<OrderedDish> dd = dao.GetOrderedDishes(orderID);
+        Dictionary<string, int> newItems = new Dictionary<string, int>();
+        foreach (var d in dd)
+        {
+            newItems.Add(d.IdMenuNavigation.Name,d.Number);
+        }
+        dd.Clear();
+        Console.WriteLine("Order menu now:");
+        Console.WriteLine("======================");
+        foreach (var d in dd)
+        {
+            Console.WriteLine($"{d.IdMenuNavigation.Name } X  {d.Number}");
+        }
+        Console.WriteLine("======================");
+        
+        Console.Write("Enter the name dish: ");
+        string upDish = Console.ReadLine();
+        Console.Write("Enter the new quantity: ");
+        int nquantity = int.Parse(Console.ReadLine());
+
+        if (newItems.ContainsKey(upDish))
+        {
+            newItems[upDish] = nquantity;
+        }
+        else
+        {
+            Console.WriteLine("Dish wasn`t found.");
+        }
+        dao.UpdateList(orderID,newItems);
+    }
+
+    private static void deleleDishesInOrder(int orderID)
+    {
+        RestaurantControl dao = RestaurantControl.getInstance();
+        List<OrderedDish> dd = dao.GetOrderedDishes(orderID);
+        Dictionary<string, int> dishesInOrder = new Dictionary<string, int>();
+        foreach (var d in dd)
+        {
+            dishesInOrder.Add(d.IdMenuNavigation.Name,d.Number);
+        }
+        dd.Clear();
+        Console.WriteLine("Order menu now:");
+        Console.WriteLine("======================");
+        foreach (var d in dishesInOrder)
+        {
+            Console.WriteLine($"{d.Key } X  {d.Value}");
+        }
+        Console.WriteLine("======================");
+        while (true)
+        {
+            Console.Write("Enter the name dish or enter end for exit: ");
+            string delDish = Console.ReadLine();
+            if (delDish.ToLower() == "end")
+            {
+                break;
+            }
+            if (dishesInOrder.ContainsKey(delDish))
+            {
+                dishesInOrder.Remove(delDish);
+                dao.UpdateList(orderID,dishesInOrder);
+            }
+            else
+            {
+                Console.WriteLine("Dish was not found.");
+            }
+        }
         
     }
+
+}
     

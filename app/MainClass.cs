@@ -1,4 +1,5 @@
-п»їusing Microsoft.EntityFrameworkCore;
+using ConsoleTableExt;
+using Microsoft.EntityFrameworkCore;
 using RestaurantAppOOP.app;
 using RestaurantAppOOP.db;
 using RestaurantAppOOP.models;
@@ -8,7 +9,7 @@ public class MainClass
     public static void Main()
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        GeneralMenu(); // Р—Р°РїСѓСЃРє РѕСЃРЅРѕРІРЅРѕРіРѕ РјРµРЅСЋ
+        GeneralMenu(); // Запуск основного меню
 
     }
 
@@ -19,11 +20,7 @@ public class MainClass
         while (choiceGeneral != 4)
         {
 
-            Console.WriteLine("Menu");
-            Console.WriteLine("1. Order processing");
-            Console.WriteLine("2. Menu management");
-            Console.WriteLine("3. Management of waiters");
-            Console.WriteLine("4. Exit the program");
+            PrintGeneralMenuTable();
             Console.Write("Your choice: ");
             choiceGeneral = Convert.ToInt32(Console.ReadLine());
 
@@ -51,6 +48,35 @@ public class MainClass
 
 
         }
-    } // Р“РѕР»РѕРІРЅРµ РјРµРЅСЋ РїСЂРѕРіСЂР°РјРё
+    } // Головне меню програми
+    private static void PrintGeneralMenuTable()
+    {
+        List<string> MenuItems = new List<string>
+        {
+            "1. Order processing",
+            "2. Menu management",
+            "3. Management of waiters",
+            "4. Exit the program"
+        };
+        ConsoleTableBuilder.From(MenuItems)
+            .WithCharMapDefinition(
+                CharMapDefinition.FramePipDefinition,
+                new Dictionary<HeaderCharMapPositions, char>
+                {
+                    { HeaderCharMapPositions.TopLeft, '?' },
+                    { HeaderCharMapPositions.TopCenter, '?' },
+                    { HeaderCharMapPositions.TopRight, '?' },
+                    { HeaderCharMapPositions.BottomLeft, '?' },
+                    { HeaderCharMapPositions.BottomCenter, '?' },
+                    { HeaderCharMapPositions.BottomRight, '?' },
+                    { HeaderCharMapPositions.BorderTop, '?' },
+                    { HeaderCharMapPositions.BorderRight, '?' },
+                    { HeaderCharMapPositions.BorderBottom, '?' },
+                    { HeaderCharMapPositions.BorderLeft, '?' },
+                    { HeaderCharMapPositions.Divider, '?' },
+                })
+            .WithTitle("General menu")
+            .ExportAndWriteLine(TableAligntment.Left);
+    }
 }
 
