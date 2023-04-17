@@ -24,4 +24,21 @@ public class WaiterDAO
         _context.Waiters.Add(newWaiter);
         _context.SaveChanges();
     }
+
+    public void Delete(string name)
+    {
+        using var _context = new RestaurantContext();
+        var nameWaiter = _context.Waiters.SingleOrDefault(wd => wd.NameWaiter == name);
+        var delWaiter = _context.Waiters.SingleOrDefault(w => w.NameWaiter == name).Id;
+        var ordrTheWaiter = _context.Orders.Where(o => o.IdWaiterNavigation.Id == delWaiter);
+        _context.Orders.RemoveRange(ordrTheWaiter);
+        if (delWaiter != null)
+        {
+            _context.Waiters.Remove(nameWaiter);
+            _context.SaveChanges();
+        }
+
+        _context.SaveChanges();
+        Console.WriteLine("Delete was completed.");
+    }
 }

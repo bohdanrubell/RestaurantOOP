@@ -29,4 +29,9 @@ public class WaiterControl
     {
         dao.Create(name);
     }
+
+    public void DeleteWaiter(string name)
+    {
+        dao.Delete(name);
+    }
 }

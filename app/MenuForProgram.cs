@@ -118,7 +118,7 @@ namespace RestaurantAppOOP.app
                         using (var context = new RestaurantContext())
                         {
                             var menuItems = context.Menus
-                                .Select(m => new { m.Id, m.Name, m.Description, m.Cost })
+                                .Select(m => new { m.Name, m.Description, m.Cost })
                                 .ToList();
                             Console.WriteLine("Current menu:");
                             ConsoleTableBuilder
@@ -217,6 +217,7 @@ namespace RestaurantAppOOP.app
                         break;
                     case 3:
                         Console.Clear();
+                        WaiterMethods.DeleteWaiter();
                         break;
                     case 4:
                         Console.Clear();

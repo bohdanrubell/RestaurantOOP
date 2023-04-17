@@ -49,4 +49,13 @@ public class WaiterMethods
         dao.CreateWaiter(input);
         Console.WriteLine($@"Waiter {input} is added to DB.");
     }
+
+
+    public static void DeleteWaiter()
+    {
+        WaiterControl dao = WaiterControl.getInstance();
+        Console.Write("Enter the name: ");
+        string delW = Console.ReadLine();
+        dao.DeleteWaiter(delW);
+    }
 }
