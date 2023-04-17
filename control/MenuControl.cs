@@ -28,4 +28,9 @@ public class MenuControl
     {
         dao.AddNewItemMenu(name,cost);
     }
+
+    public void DeleteItem(string id)
+    {
+        dao.DeleteItemMenu(id);
+    }
 }

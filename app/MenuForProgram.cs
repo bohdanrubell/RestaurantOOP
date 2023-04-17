@@ -87,13 +87,13 @@ namespace RestaurantAppOOP.app
             MenuControl dao = MenuControl.getInstance();
             Console.OutputEncoding = Encoding.UTF8;
             int selectMenu = 0;
-            while (selectMenu != 4)
+            while (selectMenu != 5)
             {
                 PrintMenuTable();
                 try
                 {
                     selectMenu = Convert.ToInt32(Console.ReadLine());
-                    if (selectMenu > 4)
+                    if (selectMenu > 5)
                     {
                         throw new ArgumentOutOfRangeException();
                     }
@@ -163,8 +163,13 @@ namespace RestaurantAppOOP.app
                         Console.WriteLine("The item has been successfully added.");
                         break;
                     case 4:
-                        Console.Clear();
+                        Console.Write("Enter the item ID: ");
+                        string iId = Console.ReadLine();
+                        dao.DeleteItem(iId);
                         break;
+                    case 5:
+                        Console.Clear();
+                        break;;
                 }
 
                 Console.WriteLine();
@@ -261,7 +266,8 @@ namespace RestaurantAppOOP.app
                 "1. Display the restaurant menu",
                 "2. Change the price of a dish",
                 "3. Add the new item",
-                "4. Return to the main menu"
+                "4. Delete the item",
+                "5. Return to the main menu"
             };
             ConsoleTableBuilder.From(menuItems)
                 .WithCharMapDefinition(

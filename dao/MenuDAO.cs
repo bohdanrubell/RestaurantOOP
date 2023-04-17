@@ -34,4 +34,16 @@ public class MenuDAO
         _context.Menus.Add(newItem);
         _context.SaveChanges();
     }
+
+    public void DeleteItemMenu(string itemName)
+    {
+        using var _context = new RestaurantContext();
+        var delMenu = _context.Menus.SingleOrDefault(i => i.Name == itemName);
+        if (delMenu != null)
+        {
+            _context.Menus.Remove(delMenu);
+            _context.SaveChanges();
+        }
+        Console.WriteLine("Delete item was completed.");
+    }
 }
