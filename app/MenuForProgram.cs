@@ -22,14 +22,34 @@ namespace RestaurantAppOOP.app
         {
             RestaurantControl control = RestaurantControl.getInstance();
             Console.OutputEncoding = Encoding.UTF8;
-            int choice = 0;
-            while (choice != 6)
+            int selectOrder = 0;
+            while (selectOrder != 6)
             {
                 PrintOrderTable();
-                Console.Write("Make a choice:");
-                choice = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Select a function:");
+                try
+                {
+                    selectOrder = Convert.ToInt32(Console.ReadLine());
+                    if (selectOrder > 6)
+                    {
+                        
+                        throw new ArgumentOutOfRangeException();
+                    }
+                }
+                catch (FormatException)
+                {
+                    selectOrder = 0;
+                    Console.Clear();
+                    Console.WriteLine("Invalid format. Please, try again.");
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    selectOrder = 0;
+                    Console.Clear();
+                    Console.WriteLine("Invalid selection. Please, try again. Must be [1-6]");
+                }
 
-                switch (choice)
+                switch (selectOrder)
                 {
                     case 1:
                         Console.Clear();
@@ -52,27 +72,46 @@ namespace RestaurantAppOOP.app
                         OrderMethods.UpdateOrder();
                         break;
                     case 6:
+                        Console.Clear();
                         break;
-                    default:
-                        Console.WriteLine("Wrong choice. Try again.");
-                        break;
+                    
                 }
-
                 Console.WriteLine();
             }
+            
+            
         }
 
         public static void menuRestaurantControl()
         {
             MenuControl dao = MenuControl.getInstance();
             Console.OutputEncoding = Encoding.UTF8;
-            int choice = 0;
-            while (choice != 4)
+            int selectMenu = 0;
+            while (selectMenu != 4)
             {
                 PrintMenuTable();
-                choice = Convert.ToInt32(Console.ReadLine());
-
-                switch (choice)
+                try
+                {
+                    selectMenu = Convert.ToInt32(Console.ReadLine());
+                    if (selectMenu > 4)
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+                }
+                catch (FormatException)
+                {
+                    selectMenu = 0;
+                    Console.Clear();
+                    Console.WriteLine("Invalid format. Please, try again.");
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    selectMenu = 0;
+                    Console.Clear();
+                    Console.WriteLine("Invalid selection. Please,try again. Must be [1-4]");
+                }
+                
+                switch (selectMenu)
                 {
                     case 1:
                         Console.Clear();
@@ -123,8 +162,8 @@ namespace RestaurantAppOOP.app
                         }
                         Console.WriteLine("The item has been successfully added.");
                         break;
-                    default:
-                        Console.WriteLine("Wrong choice. Try again.");
+                    case 4:
+                        Console.Clear();
                         break;
                 }
 
@@ -134,29 +173,48 @@ namespace RestaurantAppOOP.app
 
         public static void waitersControl()
         {
-            int choice = 0;
-            while (choice != 3)
+            int selectWaiter = 0;
+            while (selectWaiter != 4)
             {
-                Console.WriteLine("Select a function:");
-                Console.WriteLine("1. Display the list of available waiters");
-                Console.WriteLine("2. Add a new waiter");
-                Console.WriteLine("3. Return to the main menu");
-                choice = Convert.ToInt32(Console.ReadLine());
+                PrintWaiterTable();
+                Console.Write("Select a function:");
+                try
+                {
+                    selectWaiter = Convert.ToInt32(Console.ReadLine());
+                    if (selectWaiter > 4)
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+                }
+                catch (FormatException)
+                {
+                    selectWaiter = 0;
+                    Console.Clear();
+                    Console.WriteLine("Invalid format. Please, try again.");
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    selectWaiter = 0;
+                    Console.Clear();
+                    Console.WriteLine("Invalid selection. Please, try again. Must be [1-4]");
+                }
+               
 
-                switch (choice)
+                switch (selectWaiter)
                 {
                     case 1:
                         Console.Clear();
                         WaiterMethods.PrintAllWaiters();
                         break;
                     case 2:
+                        Console.Clear();
                         WaiterMethods.CreateNewWaiter();
                         break;
                     case 3:
                         Console.Clear();
                         break;
-                    default:
-                        Console.WriteLine("Wrong choice. Try again.");
+                    case 4:
+                        Console.Clear();
                         break;
                 }
 
@@ -223,6 +281,36 @@ namespace RestaurantAppOOP.app
                         { HeaderCharMapPositions.Divider, '?' },
                     })
                 .WithTitle("Menu control")
+                .ExportAndWriteLine(TableAligntment.Left);
+        }
+        
+        private static void PrintWaiterTable()
+        {
+            List<string> waiterItems = new List<string>
+            {
+                "1. Display the list of available waiters",
+                "2. Add a new waiter",
+                "3. Delete the waiter",
+                "4. Return to the main menu"
+            };
+            ConsoleTableBuilder.From(waiterItems)
+                .WithCharMapDefinition(
+                    CharMapDefinition.FramePipDefinition,
+                    new Dictionary<HeaderCharMapPositions, char>
+                    {
+                        { HeaderCharMapPositions.TopLeft, '?' },
+                        { HeaderCharMapPositions.TopCenter, '?' },
+                        { HeaderCharMapPositions.TopRight, '?' },
+                        { HeaderCharMapPositions.BottomLeft, '?' },
+                        { HeaderCharMapPositions.BottomCenter, '?' },
+                        { HeaderCharMapPositions.BottomRight, '?' },
+                        { HeaderCharMapPositions.BorderTop, '?' },
+                        { HeaderCharMapPositions.BorderRight, '?' },
+                        { HeaderCharMapPositions.BorderBottom, '?' },
+                        { HeaderCharMapPositions.BorderLeft, '?' },
+                        { HeaderCharMapPositions.Divider, '?' },
+                    })
+                .WithTitle("Waiter's control")
                 .ExportAndWriteLine(TableAligntment.Left);
         }
     }

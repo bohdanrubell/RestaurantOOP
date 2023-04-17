@@ -10,7 +10,6 @@ public class MainClass
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         GeneralMenu(); // Запуск основного меню
-
     }
 
     public static void GeneralMenu()
@@ -19,33 +18,53 @@ public class MainClass
         int choiceGeneral = 0;
         while (choiceGeneral != 4)
         {
-
+        
             PrintGeneralMenuTable();
+            
             Console.Write("Your choice: ");
-            choiceGeneral = Convert.ToInt32(Console.ReadLine());
-
-            switch (choiceGeneral)
+            try
             {
-                case 1:
-                    Console.Clear();
-                    MenuForProgram.orderProcessing();
-                    break;
-                case 2:
-                    Console.Clear();
-                    MenuForProgram.menuRestaurantControl();
-                    break;
-                case 3:
-                    MenuForProgram.waitersControl();
-                    break;
-                case 4:
-                    Console.WriteLine("Goodbye!");
-                    break;
-                default:
-                    Console.WriteLine("Wrong choice. Try again.");
-                    break;
+                choiceGeneral = Convert.ToInt32(Console.ReadLine());
+                if (choiceGeneral > 4)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
             }
-            Console.WriteLine();
+            catch (FormatException e)
+            {
+                choiceGeneral = 0;
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again.");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                choiceGeneral = 0;
+                Console.Clear();
+                Console.WriteLine("Invalid choise. Please, try again.");
+            }
 
+            
+                switch (choiceGeneral)
+                {
+                    case 1:
+                        Console.Clear();
+                        MenuForProgram.orderProcessing();
+                        break;
+                    case 2:
+                        Console.Clear();
+                        MenuForProgram.menuRestaurantControl();
+                        break;
+                    case 3:
+                        Console.Clear();
+                        MenuForProgram.waitersControl();
+                        break;
+                    case 4:
+                        Console.WriteLine("Goodbye!");
+                        break;
+                }
+
+                Console.WriteLine();
+            
 
         }
     } // Головне меню програми
