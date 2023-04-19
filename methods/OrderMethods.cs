@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using ConsoleTableExt;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAppOOP.control;
 using RestaurantAppOOP.db;
@@ -219,16 +220,10 @@ public class OrderMethods
 
     public static void UpdateOrder()
     {
-        Console.Write("Enter the ID order:");
+        Console.Write("Enter the ID order: ");
         int orderID = int.Parse(Console.ReadLine());
         RestaurantControl dao = RestaurantControl.getInstance();
-        Console.WriteLine("What do you want to update?");
-        Console.WriteLine("1. Waiter`s name");
-        Console.WriteLine("2.Add new dishes in order");
-        Console.WriteLine("3.Update dishes in order");
-        Console.WriteLine("4.Delete dishes in order");
-        Console.WriteLine("5. Return to menu");
-
+        PrintUpdateTable();
         int ch = int.Parse(Console.ReadLine());
         switch (ch)
         {
@@ -258,6 +253,7 @@ public class OrderMethods
                 while (true)
                 {
                     string inputMenu = Console.ReadLine();
+                    
 
                     if (inputMenu.ToLower() == "end")
                     {
@@ -296,14 +292,12 @@ public class OrderMethods
 
     private static void updateQuantityDishesInOrder(int orderID)
     {
-        RestaurantControl dao = RestaurantControl.getInstance();
-        List<OrderedDish> dd = dao.GetOrderedDishes(orderID);
+        List<OrderedDish> dd = control.GetOrderedDishes(orderID);
         Dictionary<string, int> newItems = new Dictionary<string, int>();
         foreach (var d in dd)
         {
             newItems.Add(d.IdMenuNavigation.Name, d.Number);
         }
-
         dd.Clear();
         Console.WriteLine("Order menu now:");
         Console.WriteLine("======================");
@@ -311,9 +305,8 @@ public class OrderMethods
         {
             Console.WriteLine($"{d.IdMenuNavigation.Name} X  {d.Number}");
         }
-
         Console.WriteLine("======================");
-
+        Console.WriteLine();
         Console.Write("Enter the name dish: ");
         string upDish = Console.ReadLine();
         Console.Write("Enter the new quantity: ");
@@ -328,7 +321,7 @@ public class OrderMethods
             Console.WriteLine("Dish wasn`t found.");
         }
 
-        dao.UpdateList(orderID, newItems);
+        control.UpdateList(orderID, newItems);
     }
 
     private static void deleleDishesInOrder(int orderID)
@@ -370,4 +363,37 @@ public class OrderMethods
             }
         }
     }
+    
+    
+    private static void PrintUpdateTable()
+    {
+        List<string> menuItems = new List<string>
+        {
+            "1. Waiter`s name",
+            "2.Add new dishes in order",
+            "3.Update dishes in order",
+            "4.Delete dishes in order",
+            "5. Return to menu"
+        };
+        ConsoleTableBuilder.From(menuItems)
+            .WithCharMapDefinition(
+                CharMapDefinition.FramePipDefinition,
+                new Dictionary<HeaderCharMapPositions, char>
+                {
+                    { HeaderCharMapPositions.TopLeft, '?' },
+                    { HeaderCharMapPositions.TopCenter, '?' },
+                    { HeaderCharMapPositions.TopRight, '?' },
+                    { HeaderCharMapPositions.BottomLeft, '?' },
+                    { HeaderCharMapPositions.BottomCenter, '?' },
+                    { HeaderCharMapPositions.BottomRight, '?' },
+                    { HeaderCharMapPositions.BorderTop, '?' },
+                    { HeaderCharMapPositions.BorderRight, '?' },
+                    { HeaderCharMapPositions.BorderBottom, '?' },
+                    { HeaderCharMapPositions.BorderLeft, '?' },
+                    { HeaderCharMapPositions.Divider, '?' },
+                })
+            .WithTitle("What update?")
+            .ExportAndWriteLine(TableAligntment.Left);
+    }
+    
 }
