@@ -64,9 +64,7 @@ namespace RestaurantAppOOP.app
                         OrderMethods.PrintAllOrders();
                         break;
                     case 4:
-                        Console.Write("Enter the order number you want to delete:");
-                        int n = int.Parse(Console.ReadLine());
-                        control.DeleteTheOrder(n);
+                        OrderMethods.DeleteOrder();
                         break;
                     case 5:
                         OrderMethods.UpdateOrder();

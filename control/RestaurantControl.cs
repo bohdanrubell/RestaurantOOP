@@ -25,6 +25,11 @@ namespace RestaurantAppOOP.control;
         return instance;
     }
 
+    public void CreateNewOrderToDB(Order o)
+    {
+        dao.CreateOrder(o);
+    }
+    
     public List<Order> FindAllOrders()
     {
         return dao.FindAllOrd();
@@ -38,6 +43,16 @@ namespace RestaurantAppOOP.control;
     public void UpdateWOrder(int orderID, string newName)
     {
         dao.UpdateWaiterNameOrder(orderID,newName);
+    }
+
+    public int CheckingTheWaiterInOrder(string name)
+    {
+        return dao.CheckTheWaiter(name);
+    }
+
+    public int ChekingItemMenuInDB(string name)
+    {
+       return dao.CheckItemM(name);
     }
 
     public List<OrderedDish> GetOrderedDishes(int orderID)

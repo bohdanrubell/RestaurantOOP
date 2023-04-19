@@ -8,39 +8,105 @@ namespace RestaurantAppOOP.methods;
 
 public class OrderMethods
 {
+    private static RestaurantControl control = RestaurantControl.getInstance();
     public static void CreateOrd()
     {
-        using (var context = new RestaurantContext())
-        {
-            Console.Write("Enter the waiter's name:");
-            string waiterName = Console.ReadLine();
-            Console.Write("Enter the table number:");
-            int tableNumber = int.Parse(Console.ReadLine());
+            int waiterId = 0;
+            while (true)
+            {
+                Console.Write("Enter the waiter's name: ");
+                string waiterName = Console.ReadLine();
+                try
+                { 
+                    //Перевірка введеного офіцанта на наявнсть, якщо існує, передаємо його ідентифікатор
+                    waiterId = control.CheckingTheWaiterInOrder(waiterName);
+                    break;
+                }
+                catch (ArgumentException e)
+                {
+                    Console.Clear();
+                    Console.WriteLine(e.Message);
+                    continue;
+                }
+            } // Вибір офіціанта та перевірка на його наявність в базі даних
 
-            int waiterId = context.Waiters.Single(w => w.NameWaiter == waiterName).Id;
-
+            int tableNumber = 0;
+            while (true)
+            {
+                Console.Write("Enter the table number: ");
+                try
+                {
+                    tableNumber = int.Parse(Console.ReadLine());
+                    if (tableNumber > 100)
+                    {
+                        throw new ArgumentOutOfRangeException("Error! The restaurant has no more than 100 tables!");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    continue;
+                } // Виняток обробки для діапазону столиків
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid format. Please,try again");
+                    continue;
+                } // Виняток обробки формату даниих
+            } // Вибір столика та перевірка діапазону
+            
             var orderN = new Order
             {
                 IdWaiter = waiterId,
                 NumberOfTable = tableNumber,
                 DateOrder = DateTime.Now
-            };
-            var dishes = new Dictionary<string, int>();
-            Console.Write(
-                "Enter the name of the dish or enter 'end' to complete the entry: ");
+            }; // Створюємо екземпляр класу Order для ноовго замовлення
+            
+            string inputMenu = null;
+            int dishID,number = 0;
             while (true)
             {
-                string inputMenu = Console.ReadLine();
-
-                if (inputMenu.ToLower() == "end")
+                Console.Write("Enter the name of the dish or enter 'end' to complete the entry: ");
+                try
                 {
-                    break;
+                    inputMenu = Console.ReadLine();
+                    if (inputMenu.ToLower() == "end")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        //Перевірка на наявність елемента в меню, якщо так повертаємо його ідентифікатор
+                        dishID = control.ChekingItemMenuInDB(inputMenu);
+                    }
+                    
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    continue;
                 }
                 
+                var dishes = new Dictionary<string, int>(); // Тимчасове зберігання замовлених страв
                 Console.Write("Enter the quantity of dish: ");
-                int number = int.Parse(Console.ReadLine());
-                
-                if (dishes.ContainsKey(inputMenu))
+                try
+                {
+                    // Введеня кількості поточного елемента меню 
+                    number = int.Parse(Console.ReadLine());
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid format. Please,try again.");
+                    continue;
+                }
+               
+                /*Перевірка на наявність блюда в тим.сховищі, якщо так, до елементу(ключ)
+                 добавляємо певну кількість
+                до поточної*/
+                if (dishes.ContainsKey(inputMenu)) 
                 {
                     dishes[inputMenu] += number;
                 }
@@ -48,27 +114,22 @@ public class OrderMethods
                 {
                     dishes.Add(inputMenu, number);
                 }
-            }
-
-
-            foreach (var dis in dishes)
-            {
-                var dishID = context.Menus.Single(d => d.Name == dis.Key).Id;
-
-                var orderedDish = new OrderedDish
+                // Збереження елементу в тимчасове сховище
+                foreach (var dis in dishes)
                 {
-                    IdMenu = dishID,
-                    Number = dis.Value
-                };
-                orderN.OrderedDishes.Add(orderedDish);
-            }
-
-            context.Orders.Add(orderN);
-            context.SaveChanges();
+                    //Створюємо екземпяр класу, який відповідає за замовлені страви
+                    var orderedDish = new OrderedDish
+                    {
+                        IdMenu = dishID,
+                        Number = dis.Value
+                    };
+                    orderN.OrderedDishes.Add(orderedDish);// Замовлений елемент меню присвоюємо до певного замовлення
+                }
+            } // Створення замовлених страв до замовлення
+            control.CreateNewOrderToDB(orderN); // Відправка замовлення на базу даних
             var idford = orderN.Id;
             Console.WriteLine($"Order #{idford} was added.");
-        }
-    }
+    } // Метод для створення нового замовлення 
 
     public static void PrintOrder()
     {
@@ -113,15 +174,43 @@ public class OrderMethods
     {
         RestaurantControl control = RestaurantControl.getInstance();
         var order = control.FindAllOrders();
-        foreach (Order or in order)
+
+        if (order != null && order.Any())
         {
-            Console.WriteLine($"ID замовлення : {or.Id}");
-            Console.WriteLine($"{or.IdWaiterNavigation.NameWaiter}");
-            Console.WriteLine($"Дата замовлення: {or.DateOrder}");
-            Console.WriteLine($"Столик, де було замовлено: {or.NumberOfTable}");
-            Console.WriteLine("----------------------------------------------");
+            foreach (Order or in order)
+            {
+                Console.WriteLine($"ID замовлення : {or.Id}");
+                Console.WriteLine($"{or.IdWaiterNavigation.NameWaiter}");
+                Console.WriteLine($"Дата замовлення: {or.DateOrder}");
+                Console.WriteLine($"Столик, де було замовлено: {or.NumberOfTable}");
+                Console.WriteLine("----------------------------------------------");
+            }
+        }
+        else
+        {
+            Console.WriteLine("ERROR: No order found!");
         }
     }
+
+    public static void DeleteOrder()
+    {
+        Console.Write("Enter the order number you want to delete: ");
+        try
+        {
+            int n = int.Parse(Console.ReadLine());
+            control.DeleteTheOrder(n);
+        }
+        catch (FormatException)
+        {
+            Console.Clear();
+            Console.WriteLine("Invalid format. Please,try again!");
+        }
+        catch (ArgumentNullException)
+        {
+            Console.Clear();
+            Console.WriteLine("The order does not exist.");
+        }
+    } // Метод для видалення замовлення
 
     public static void UpdateOrder()
     {

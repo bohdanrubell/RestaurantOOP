@@ -11,6 +11,20 @@ namespace RestaurantAppOOP.dao
 {
     public class RestaurantDAO
     {
+        public void CreateOrder(Order newOrder)
+        {
+            using var _context = new RestaurantContext();
+            try
+            {
+                _context.Orders.Add(newOrder);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error!: {e.Message}");
+            }
+        }
+        
         public List<Order> FindAllOrd()
         {
             using var _context = new RestaurantContext();
@@ -28,6 +42,10 @@ namespace RestaurantAppOOP.dao
             {
                 _context.Orders.Remove(order);
                 _context.SaveChanges();
+            }
+            else
+            {
+                throw new ArgumentNullException();
             }
             Console.WriteLine("Delete was completed.");
         } // Видалення певного замовлення 
@@ -49,7 +67,7 @@ namespace RestaurantAppOOP.dao
                 Console.WriteLine($"Order with ID {orderID} not found.");
             }
 
-        }
+        } // Змінити офіціанта в певному замовленні
 
         public List<OrderedDish> GetOrderedDishesForOrder(int orderID)
         {
@@ -59,7 +77,7 @@ namespace RestaurantAppOOP.dao
                 .Where(od => od.IdOrder == orderID)
                 .ToList();
             
-        }
+        } // Отримати замовлені страви в певному замовленні
 
         public void UpdateListOfDishes(int orderID, Dictionary<string, int> newI)
         {
@@ -83,6 +101,34 @@ namespace RestaurantAppOOP.dao
             }
 
             context.SaveChanges();
+        } // Оновити список замовлених страв в певному замовлені
+        
+        public int CheckTheWaiter(string name)
+        {
+            using var _context = new RestaurantContext();
+            var waiter = _context.Waiters.SingleOrDefault(w => w.NameWaiter == name);
+            if (waiter != null)
+            {
+                return waiter.Id;
+            }
+            else
+            {
+                throw new ArgumentException($"Waiter with name {name} does not exist.");
+            }
+        } // Перевірка на наявність офіціанта в базі даних
+
+        public int CheckItemM(string name)
+        {
+            using var _context = new RestaurantContext();
+            var item = _context.Menus.SingleOrDefault(i => i.Name == name);
+            if (item != null)
+            {
+                return item.Id;
+            }
+            else
+            {
+                throw new ArgumentException($"Item menu with name {name} does not exist.");
+            }
         }
         
     }
