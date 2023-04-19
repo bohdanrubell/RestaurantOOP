@@ -53,7 +53,7 @@ namespace RestaurantAppOOP.app
                 {
                     case 1:
                         Console.Clear();
-                        OrderMethods.CreateOrd();
+                        OrderMethods.CreateOrd(); // Створення нового замовлення
                         break;
                     case 2:
                         Console.Clear();

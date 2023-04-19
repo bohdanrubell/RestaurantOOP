@@ -35,6 +35,11 @@ namespace RestaurantAppOOP.control;
         return dao.FindAllOrd();
     }
 
+    public List<Order> GetTheOrderForPrint(int ID)
+    {
+        return dao.GetTheOrder(ID);
+    }
+
     public void DeleteTheOrder(int orderId)
     {
         dao.DeleteOrder(orderId);

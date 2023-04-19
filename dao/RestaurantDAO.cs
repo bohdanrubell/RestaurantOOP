@@ -11,6 +11,17 @@ namespace RestaurantAppOOP.dao
 {
     public class RestaurantDAO
     {
+        public List<Order> GetTheOrder(int orderID)
+        {
+            using var _context = new RestaurantContext();
+            var orderGet = _context.Orders
+                .Include(o => o.IdWaiterNavigation)
+                .Include(od => od.OrderedDishes)
+                .FirstOrDefault(i => i.Id == orderID);
+            return new List<Order> {orderGet};
+        }
+        
+        
         public void CreateOrder(Order newOrder)
         {
             using var _context = new RestaurantContext();
@@ -23,7 +34,7 @@ namespace RestaurantAppOOP.dao
             {
                 Console.WriteLine($"Error!: {e.Message}");
             }
-        }
+        }  // Створення нового замовлення
         
         public List<Order> FindAllOrd()
         {
@@ -129,7 +140,7 @@ namespace RestaurantAppOOP.dao
             {
                 throw new ArgumentException($"Item menu with name {name} does not exist.");
             }
-        }
+        } // Перевірка на навяність офіціанта в базі даних
         
     }
 }
