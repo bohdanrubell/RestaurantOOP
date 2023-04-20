@@ -45,6 +45,11 @@ namespace RestaurantAppOOP.control;
         dao.DeleteOrder(orderId);
     }
 
+    public void CheckOrder(int orderID)
+    {
+        dao.isNotOrder(orderID);
+    }
+
     public void UpdateWOrder(int orderID, string newName)
     {
         dao.UpdateWaiterNameOrder(orderID,newName);

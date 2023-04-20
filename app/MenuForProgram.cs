@@ -67,7 +67,7 @@ namespace RestaurantAppOOP.app
                         OrderMethods.DeleteOrder();
                         break;
                     case 5:
-                        OrderMethods.UpdateOrder();
+                        OrderMethods.UpdateOrderMenu();
                         break;
                     case 6:
                         Console.Clear();
@@ -201,8 +201,7 @@ namespace RestaurantAppOOP.app
                     Console.Clear();
                     Console.WriteLine("Invalid selection. Please, try again. Must be [1-4]");
                 }
-               
-
+                
                 switch (selectWaiter)
                 {
                     case 1:

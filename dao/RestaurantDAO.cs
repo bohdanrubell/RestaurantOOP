@@ -20,7 +20,16 @@ namespace RestaurantAppOOP.dao
                 .FirstOrDefault(i => i.Id == orderID);
             return new List<Order> {orderGet};
         }
-        
+
+        public void isNotOrder(int orderID)
+        {
+            using var _context = new RestaurantContext();
+            var check = _context.Orders.SingleOrDefault(i => i.Id == orderID);
+            if (check == null)
+            {
+                throw new InvalidOperationException("Order not found!");
+            }
+        }
         
         public void CreateOrder(Order newOrder)
         {

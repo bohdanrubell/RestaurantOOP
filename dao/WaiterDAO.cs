@@ -17,6 +17,25 @@ public class WaiterDAO
         return _context.Waiters.ToList();
     }
 
+    public void IsWaiter(string name)
+    {
+        using var _context = new RestaurantContext();
+        var check = _context.Waiters.SingleOrDefault(w => w.NameWaiter == name);
+        if (check != null)
+        {
+            throw new InvalidOperationException("Waiter with this name already exists");
+        }
+    }
+    public void IsNotWaiter(string name)
+    {
+        using var _context = new RestaurantContext();
+        var check = _context.Waiters.SingleOrDefault(w => w.NameWaiter == name);
+        if (check == null)
+        {
+            throw new InvalidOperationException("Waiter not found!");
+        }
+    }
+
     public void Create(string name)
     {
         using var _context = new RestaurantContext();

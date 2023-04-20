@@ -10,6 +10,7 @@ namespace RestaurantAppOOP.methods;
 public class OrderMethods
 {
     private static RestaurantControl control = RestaurantControl.getInstance();
+    private static WaiterControl wcontrol = WaiterControl.getInstance();
 
     public static void CreateOrd()
     {
@@ -170,7 +171,7 @@ public class OrderMethods
         Console.WriteLine("└─────────────────────────────────────────┘");
         dishesForPrint.Clear();
         // Виведення загальної суми замовлення
-    } // Метод для виведення всієї інформації із замовлення
+    } // Метод для виведення всієї інформації із замовлення + 
 
     public static void PrintAllOrders()
     {
@@ -196,15 +197,16 @@ public class OrderMethods
         {
             Console.WriteLine("ERROR: No order found!");
         }
-    } // Метод для виведення всіх замовлень які є в БД (скорочена) 
+    } // Метод для виведення всіх замовлень які є в БД (скорочена) +
 
     public static void DeleteOrder()
     {
+        
         Console.Write("Enter the order number you want to delete: ");
         try
         {
             int n = int.Parse(Console.ReadLine());
-            control.DeleteTheOrder(n);
+            
         }
         catch (FormatException)
         {
@@ -216,65 +218,75 @@ public class OrderMethods
             Console.Clear();
             Console.WriteLine("The order does not exist.");
         }
-    } // Метод для видалення замовлення
+    } // Метод для видалення замовлення + 
 
-    public static void UpdateOrder()
+    public static void UpdateOrderMenu()
     {
-        Console.Write("Enter the ID order: ");
-        int orderID = int.Parse(Console.ReadLine());
-        RestaurantControl dao = RestaurantControl.getInstance();
-        PrintUpdateTable();
-        int ch = int.Parse(Console.ReadLine());
+        int orderID = 0;
+        while (true)
+        {
+            Console.Write("Enter the ID order: ");
+            try
+            {
+                orderID = int.Parse(Console.ReadLine());
+                control.CheckOrder(orderID);
+                break;
+            }
+            catch (FormatException)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again.");
+                continue;
+            }
+            catch (InvalidOperationException e )
+            {
+                Console.Clear();
+                Console.WriteLine(e);
+                continue;
+            }
+        }
+        
+        int ch = 0;
+        while (true)
+        {
+            PrintUpdateTable();
+            try
+            {
+                Console.Write("Select a function: ");
+                ch = int.Parse(Console.ReadLine());
+                if (ch > 5)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                else
+                {
+                   break;
+                }
+            }
+            catch (FormatException)
+            {
+                ch = 0;
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again.");
+                continue;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                ch = 0;
+                Console.Clear();
+                Console.WriteLine("Invalid selection. Please, try again. Must be [1-5]");
+                continue;
+            }
+        }
+       
+       
         switch (ch)
         {
             case 1:
-                Console.Write("Enter the new waiter name: ");
-                string newWaiter = Console.ReadLine();
-                control.UpdateWOrder(orderID, newWaiter);
+                updateWaiterInOrder(orderID);
                 break;
             case 2:
-                List<OrderedDish> dd = dao.GetOrderedDishes(orderID);
-                Dictionary<string, int> newItems = new Dictionary<string, int>();
-                foreach (var d in dd)
-                {
-                    newItems.Add(d.IdMenuNavigation.Name, d.Number);
-                }
-
-                Console.WriteLine("Order menu now:");
-                Console.WriteLine("======================");
-                foreach (var d in dd)
-                {
-                    Console.WriteLine($"{d.IdMenuNavigation.Name} X  {d.Number}");
-                }
-
-                Console.WriteLine("======================");
-                Console.WriteLine(
-                    "Enter the name of the dish or enter 'end' to complete the entry: ");
-                while (true)
-                {
-                    string inputMenu = Console.ReadLine();
-                    
-
-                    if (inputMenu.ToLower() == "end")
-                    {
-                        break;
-                    }
-
-                    Console.WriteLine("Enter the quantity of dish: ");
-                    int quant = int.Parse(Console.ReadLine());
-
-                    if (newItems.ContainsKey(inputMenu))
-                    {
-                        newItems[inputMenu] += quant;
-                    }
-                    else
-                    {
-                        newItems.Add(inputMenu, quant);
-                    }
-
-                    dao.UpdateList(orderID, newItems);
-                }
-
+                addTheItemsInOrder(orderID);
                 break;
             case 3:
                 updateQuantityDishesInOrder(orderID);
@@ -288,8 +300,103 @@ public class OrderMethods
                 Console.WriteLine("Error.Try again.");
                 break;
         }
-    }
+    }// +
 
+    private static void updateWaiterInOrder(int orderID)
+    {
+        string newWaiter = null;
+        while (true)
+        {
+            Console.Write("Enter the new waiter name: ");
+            try
+            {
+                newWaiter = Console.ReadLine();
+                wcontrol.NotWaiter(newWaiter);
+                break;
+            }
+            catch (FormatException)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again!");
+                continue;
+            }
+            catch (InvalidOperationException e )
+            {
+                Console.Clear();
+                Console.WriteLine(e);
+                continue;
+            }
+
+        }
+        control.UpdateWOrder(orderID, newWaiter);
+    }// +
+
+    private static void addTheItemsInOrder(int orderID)
+    {
+        List<OrderedDish> dd = control.GetOrderedDishes(orderID);
+        Dictionary<string, int> newItems = new Dictionary<string, int>();
+        foreach (var d in dd)
+        {
+            newItems.Add(d.IdMenuNavigation.Name, d.Number);
+        }
+        Console.WriteLine("Order menu now:");
+        Console.WriteLine("======================");
+        foreach (var d in dd)
+        {
+            Console.WriteLine($"{d.IdMenuNavigation.Name} X  {d.Number}");
+        }
+
+        Console.WriteLine("======================");
+        string inputMenu = null;
+        int quant = 0;
+        while (true)
+        {
+           
+                    
+            Console.Write("Enter the name of the dish or enter 'end' to complete the entry: ");
+            try
+            {
+                inputMenu = Console.ReadLine();
+                if (inputMenu.ToLower() == "end")
+                {
+                    break;
+                }
+                else
+                {
+                    control.ChekingItemMenuInDB(inputMenu);
+                }
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                continue;
+            }
+
+            Console.WriteLine("Enter the quantity of dish: ");
+            try
+            {
+                 quant = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Invalid format. Please, try again.");
+            }
+
+            if (newItems.ContainsKey(inputMenu))
+            {
+                newItems[inputMenu] += quant;
+            }
+            else
+            {
+                newItems.Add(inputMenu, quant);
+            }
+
+            
+        }
+        control.UpdateList(orderID, newItems);
+
+    }// +
+    
     private static void updateQuantityDishesInOrder(int orderID)
     {
         List<OrderedDish> dd = control.GetOrderedDishes(orderID);
@@ -298,7 +405,6 @@ public class OrderMethods
         {
             newItems.Add(d.IdMenuNavigation.Name, d.Number);
         }
-        dd.Clear();
         Console.WriteLine("Order menu now:");
         Console.WriteLine("======================");
         foreach (var d in dd)
@@ -307,22 +413,53 @@ public class OrderMethods
         }
         Console.WriteLine("======================");
         Console.WriteLine();
-        Console.Write("Enter the name dish: ");
-        string upDish = Console.ReadLine();
-        Console.Write("Enter the new quantity: ");
-        int nquantity = int.Parse(Console.ReadLine());
-
-        if (newItems.ContainsKey(upDish))
+        dd.Clear();
+        string upDish = null;
+        int nquantity = 0;
+        while (true)
         {
-            newItems[upDish] = nquantity;
-        }
-        else
-        {
-            Console.WriteLine("Dish wasn`t found.");
-        }
 
+
+            Console.Write("Enter the name of the dish or enter 'end' to complete the entry: ");
+            try
+            {
+                upDish = Console.ReadLine();
+                if (upDish.ToLower() == "end")
+                {
+                    break;
+                }
+                else
+                {
+                    control.ChekingItemMenuInDB(upDish);
+                }
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                continue;
+            }
+
+            Console.WriteLine("Enter the quantity of dish: ");
+            try
+            {
+                nquantity = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Invalid format. Please, try again.");
+            }
+            if (newItems.ContainsKey(upDish))
+            {
+                newItems[upDish] = nquantity;
+            }
+            else
+            {
+                Console.WriteLine("Dish wasn`t found.");
+            }
+
+        }
         control.UpdateList(orderID, newItems);
-    }
+    }// +
 
     private static void deleleDishesInOrder(int orderID)
     {
@@ -362,8 +499,7 @@ public class OrderMethods
                 Console.WriteLine("Dish was not found.");
             }
         }
-    }
-    
+    } // +-
     
     private static void PrintUpdateTable()
     {

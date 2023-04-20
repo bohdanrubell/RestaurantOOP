@@ -25,6 +25,16 @@ public class WaiterControl
         return dao.FindAll();
     }
 
+    public void CheckWaiter(string name)
+    {
+        dao.IsWaiter(name);
+    }
+
+    public void NotWaiter(string name)
+    {
+        dao.IsNotWaiter(name);
+    }
+
     public void CreateWaiter(string name)
     {
         dao.Create(name);

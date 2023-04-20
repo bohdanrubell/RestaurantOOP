@@ -7,13 +7,11 @@ namespace RestaurantAppOOP.methods;
 
 public class WaiterMethods
 {
-    
+    private static WaiterControl waoControl = WaiterControl.getInstance();
     public static void PrintAllWaiters()
     {
-        WaiterControl dao = WaiterControl.getInstance();
         List<string> waiters = new List<String>();
-
-        foreach (var w in dao.FindAllWaiters())
+        foreach (var w in waoControl.FindAllWaiters())
         {
             waiters.Add(w.NameWaiter);
         }
@@ -41,14 +39,34 @@ public class WaiterMethods
     
     public static void CreateNewWaiter()
     {
-        
-        
-        Console.Write("Enter the name of the new waiter:");
-        string input = Console.ReadLine();
-        WaiterControl dao = WaiterControl.getInstance();
-        dao.CreateWaiter(input);
+        string input = null;
+        while (true)
+        {
+            Console.Write("Enter the name of the new waiter:");
+            try
+            {
+                input = Console.ReadLine();
+                waoControl.CheckWaiter(input);
+                break;
+            }
+            catch (FormatException)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again.");
+                continue;
+            }
+            catch (InvalidOperationException)
+            {
+                Console.Clear();
+                Console.WriteLine("Waiter with this name already exists");
+                continue;
+            }
+        }
+        waoControl.CreateWaiter(input);
+        Console.Clear();
         Console.WriteLine($@"Waiter {input} is added to DB.");
-    }
+        
+    } // Створення нового офіціанта +
 
 
     public static void DeleteWaiter()
