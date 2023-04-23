@@ -78,7 +78,7 @@ namespace RestaurantAppOOP.app
             }
             
             
-        }
+        }// +
 
         public static void menuRestaurantControl()
         {
@@ -108,66 +108,24 @@ namespace RestaurantAppOOP.app
                     Console.Clear();
                     Console.WriteLine("Invalid selection. Please,try again. Must be [1-4]");
                 }
-                
                 switch (selectMenu)
                 {
                     case 1:
                         Console.Clear();
-                        using (var context = new RestaurantContext())
-                        {
-                            var menuItems = context.Menus
-                                .Select(m => new { m.Name, m.Description, m.Cost })
-                                .ToList();
-                            Console.WriteLine("Current menu:");
-                            ConsoleTableBuilder
-                                .From(menuItems)
-                                .ExportAndWriteLine();
-                        }
-
+                        MenuMethods.PrintAllItemMenu();
                         break;
                     case 2:
-                        string nameDish = Console.ReadLine();
-                        Console.Write("Enter price to change:");
-                        int recost = int.Parse(Console.ReadLine());
-                        using (var context = new RestaurantContext())
-                        {
-                            var item = context.Menus.Single(i => i.Name == nameDish).Id;
-                            var dish = context.Menus.Find(item);
-                            if (item != null)
-                            {
-                                dish.Cost = recost;
-                                context.SaveChanges();
-                            }
-                        }
-
-                        Console.WriteLine("The price has been successfully changed.");
+                        MenuMethods.ChangeTheCostOfItem();
                         break;
                     case 3:
-                        Console.Write("Enter the new item name: ");
-                        string name = Console.ReadLine();
-                        Console.Write("Enter the description (if you want it): ");
-                        string discription = Console.ReadLine();
-                        Console.Write("Enter the cost new dish: ");
-                        decimal costItem = decimal.Parse(Console.ReadLine());
-
-                        if (discription == null)
-                        {
-                            dao.AddNewItem(name,costItem);
-                        }
-                        else
-                        {
-                            dao.AddNewItem(name,discription,costItem);
-                        }
-                        Console.WriteLine("The item has been successfully added.");
+                        MenuMethods.AddNewItemOfMenu();
                         break;
                     case 4:
-                        Console.Write("Enter the item ID: ");
-                        string iId = Console.ReadLine();
-                        dao.DeleteItem(iId);
+                       MenuMethods.DeleteTheItemMenu();
                         break;
                     case 5:
                         Console.Clear();
-                        break;;
+                        break;
                 }
 
                 Console.WriteLine();

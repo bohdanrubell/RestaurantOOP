@@ -11,6 +11,14 @@ public class MenuDAO
         return _context.Menus.ToList();
     }
 
+    public void ChangeCost(int ID, int cost)
+    {
+        using var _context = new RestaurantContext();
+        var item = _context.Menus.Find(ID);
+        item.Cost = cost;
+        _context.SaveChanges();
+    }
+
     public void AddNewItemMenu(string name,string discription,decimal cost)
     {
         using var _context = new RestaurantContext();

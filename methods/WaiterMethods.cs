@@ -34,7 +34,7 @@ public class WaiterMethods
                 })
             .WithTitle("Waiters available")
             .ExportAndWriteLine(TableAligntment.Left);
-
+        waiters.Clear();
     }
     
     public static void CreateNewWaiter()
@@ -71,9 +71,25 @@ public class WaiterMethods
 
     public static void DeleteWaiter()
     {
-        WaiterControl dao = WaiterControl.getInstance();
-        Console.Write("Enter the name: ");
-        string delW = Console.ReadLine();
-        dao.DeleteWaiter(delW);
+        bool loop = true;
+        string name = null;
+        while (loop)
+        {
+            Console.Write("Enter the name waiter: ");
+            try
+            {
+                name = Console.ReadLine();
+                waoControl.NotWaiter(name);
+                waoControl.DeleteWaiter(name);
+                Console.WriteLine($"Waiter {name} was deleted.");
+                loop = false;
+            }
+            catch (InvalidOperationException )
+            {
+                Console.Clear();
+                Console.WriteLine("The waiter is not in the list of waiters.");
+                continue;
+            }
+        }
     }
 }

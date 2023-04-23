@@ -20,6 +20,16 @@ public class MenuControl
         return instance;
     }
 
+    public List<Menu> AllItemsPrint()
+    {
+        return dao.FindAllDishes();
+    }
+
+    public void ChangeCostOfItem(int ID, int cost)
+    {
+        dao.ChangeCost(ID,cost);
+    }
+
     public void AddNewItem(string name, string discr, decimal cost)
     {
         dao.AddNewItemMenu(name,discr,cost);

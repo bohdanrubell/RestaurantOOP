@@ -149,7 +149,7 @@ namespace RestaurantAppOOP.dao
             {
                 throw new ArgumentException($"Item menu with name {name} does not exist.");
             }
-        } // Перевірка на навяність офіціанта в базі даних
+        } // Перевірка на навяність елемента меню в базі даних
         
     }
 }

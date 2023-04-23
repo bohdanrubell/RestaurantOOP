@@ -147,11 +147,10 @@ public class OrderMethods
             return;
         }
         //Виводимо інформацію в табличному вигляді
-        string formattedDate = orderP[0].DateOrder.ToString("dd-MM-yyyy");
         Console.WriteLine("┌─────────────────────────────────────────┐");
         Console.WriteLine($"│{"ID Order:",-10}  {orderP[0].Id,29}│"); 
         Console.WriteLine($"│{"Waiter:",-10} {orderP[0].IdWaiterNavigation.NameWaiter.Trim(),30}│");
-        Console.WriteLine($"│{"Date order:",-10} {formattedDate,29}│");
+        Console.WriteLine($"│{"Date order:",-10} {orderP[0].DateOrder.ToString("dd-MM-yyyy"),29}│");
 
         orderP.Clear();
         Console.WriteLine("├──────────────────┬───────────┬──────────|");
@@ -176,8 +175,7 @@ public class OrderMethods
     public static void PrintAllOrders()
     {
         
-        var order = control.FindAllOrders();
-
+        var order = control.FindAllOrders();`
         if (order != null && order.Any())
         {
             foreach (Order or in order)
@@ -185,7 +183,7 @@ public class OrderMethods
                 Console.WriteLine(" ───────────────────────────────");
                 Console.WriteLine($"│{"ID Order:",0}  {or.Id,20}│");
                 Console.WriteLine($"│{"Waiter's name: ",0} {or.IdWaiterNavigation.NameWaiter.Trim(),15}│");
-                Console.WriteLine($"│{"Date Order:",0} {or.DateOrder,6} │");
+                Console.WriteLine($"│{"Date Order:",0} {or.DateOrder.ToString("dd-MM-yyyy"),19}│");
                 Console.WriteLine($"│{"Table:",0} {or.NumberOfTable,24}│");
                 Console.WriteLine(" ───────────────────────────────");
                 Console.WriteLine();
@@ -480,15 +478,25 @@ public class OrderMethods
         }
 
         Console.WriteLine("======================");
+        string delDish = null;
         while (true)
         {
             Console.Write("Enter the name dish or enter end for exit: ");
-            string delDish = Console.ReadLine();
-            if (delDish.ToLower() == "end")
+            try
             {
-                break;
+                delDish = Console.ReadLine();
+                if (delDish.ToLower() == "end")
+                {
+                    break;
+                }
             }
-
+            catch (FormatException)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again");
+                continue;
+            }
+            
             if (dishesInOrder.ContainsKey(delDish))
             {
                 dishesInOrder.Remove(delDish);
