@@ -32,7 +32,6 @@ public class WaiterMethods
                     {HeaderCharMapPositions.BorderLeft, '?' },
                     {HeaderCharMapPositions.Divider, '?' },
                 })
-            .WithTitle("Waiters available")
             .ExportAndWriteLine(TableAligntment.Left);
         waiters.Clear();
     }
@@ -75,14 +74,23 @@ public class WaiterMethods
         string name = null;
         while (loop)
         {
+            PrintAllWaiters();
             Console.Write("Enter the name waiter: ");
             try
             {
                 name = Console.ReadLine();
-                waoControl.NotWaiter(name);
-                waoControl.DeleteWaiter(name);
-                Console.WriteLine($"Waiter {name} was deleted.");
-                loop = false;
+                if (name.ToLower() == "end")
+                {
+                    loop = false;
+                }
+                else
+                {
+                    waoControl.NotWaiter(name);
+                    waoControl.DeleteWaiter(name);
+                    Console.WriteLine($"Waiter {name} was deleted.");
+                    loop = false;
+                }
+               
             }
             catch (InvalidOperationException )
             {

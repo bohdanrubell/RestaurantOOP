@@ -14,6 +14,24 @@ public class OrderMethods
 
     public static void CreateOrd()
     {
+        
+        int waiterId = WaiterOrder(); // Вибираємо офіціанта за допомогоб методу
+        int tableNumber = TableOrder(); // Вибираємо столик за допомгою методу
+        var orderN = new Order
+        {
+            IdWaiter = waiterId,
+            NumberOfTable = tableNumber,
+            DateOrder = DateTime.Now
+        }; // Створюємо екземпляр класу Order для ноовго замовлення
+
+        ItemsOrder(orderN); // Додаємо елементи меню до замовлення за допомоги методу
+        control.CreateNewOrderToDB(orderN); // Відправка замовлення на базу даних
+        var idford = orderN.Id;
+        Console.WriteLine($"Order #{idford} was added.");
+    } // Метод для створення нового замовлення +
+
+    private static int WaiterOrder()
+    {
         int waiterId = 0;
         while (true)
         {
@@ -31,8 +49,18 @@ public class OrderMethods
                 Console.WriteLine(e.Message);
                 continue;
             }
+            catch (FormatException)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid format! Please,try again.");
+            }
         } // Вибір офіціанта та перевірка на його наявність в базі даних
 
+        return waiterId;
+    }//+
+
+    private static int TableOrder()
+    {
         int tableNumber = 0;
         while (true)
         {
@@ -41,37 +69,26 @@ public class OrderMethods
             {
                 tableNumber = int.Parse(Console.ReadLine());
                 if (tableNumber > 100)
-                {
-                    throw new ArgumentOutOfRangeException("Error! The restaurant has no more than 100 tables!");
-                }
-                else
-                {
-                    break;
-                }
+                { Console.WriteLine("Error! The restaurant has no more than 100 tables!"); continue; }
+                else { break; }
             }
-            catch (ArgumentException e)
-            {
-                Console.WriteLine(e.Message);
-                continue;
-            } // Виняток обробки для діапазону столиків
             catch (FormatException)
             {
                 Console.WriteLine("Invalid format. Please,try again");
                 continue;
-            } // Виняток обробки формату даниих
-        } // Вибір столика та перевірка діапазону
+            }
 
-        var orderN = new Order
-        {
-            IdWaiter = waiterId,
-            NumberOfTable = tableNumber,
-            DateOrder = DateTime.Now
-        }; // Створюємо екземпляр класу Order для ноовго замовлення
+        }
+        return tableNumber;
+    }//+
 
+    private static void ItemsOrder(Order orderN)
+    {
         string inputMenu = null;
         int dishID, number = 0;
         while (true)
         {
+            MenuMethods.PrintAllItemMenu();
             Console.Write("Enter the name of the dish or enter 'end' to complete the entry: ");
             try
             {
@@ -126,14 +143,11 @@ public class OrderMethods
                     IdMenu = dishID,
                     Number = dis.Value
                 };
-                orderN.OrderedDishes.Add(orderedDish); // Замовлений елемент меню присвоюємо до певного замовлення
+                orderN.OrderedDishes.Add(orderedDish);
+                Console.Clear();// Замовлений елемент меню присвоюємо до певного замовлення
             }
         } // Створення замовлених страв до замовлення
-
-        control.CreateNewOrderToDB(orderN); // Відправка замовлення на базу даних
-        var idford = orderN.Id;
-        Console.WriteLine($"Order #{idford} was added.");
-    } // Метод для створення нового замовлення +
+    }//+
 
     public static void PrintOrder()
     {
@@ -143,7 +157,7 @@ public class OrderMethods
         orderP.AddRange(control.GetTheOrderForPrint(num)); // Створюємо тимчасове сховище для виведення інформаціі замовлвення
         if (orderP == null)
         {
-            Console.WriteLine("Замовлення не знайдено");
+            Console.WriteLine("Order was not found!");
             return;
         }
         //Виводимо інформацію в табличному вигляді
@@ -175,7 +189,7 @@ public class OrderMethods
     public static void PrintAllOrders()
     {
         
-        var order = control.FindAllOrders();`
+        var order = control.FindAllOrders();
         if (order != null && order.Any())
         {
             foreach (Order or in order)
@@ -204,7 +218,7 @@ public class OrderMethods
         try
         {
             int n = int.Parse(Console.ReadLine());
-            
+            control.DeleteTheOrder(n);
         }
         catch (FormatException)
         {
@@ -338,13 +352,13 @@ public class OrderMethods
             newItems.Add(d.IdMenuNavigation.Name, d.Number);
         }
         Console.WriteLine("Order menu now:");
-        Console.WriteLine("======================");
+        Console.WriteLine("┌─────────────────────────┐");
         foreach (var d in dd)
         {
-            Console.WriteLine($"{d.IdMenuNavigation.Name} X  {d.Number}");
+            Console.WriteLine("│ {0,-10} │ {1,10} │", d.IdMenuNavigation.Name,d.Number);
         }
 
-        Console.WriteLine("======================");
+        Console.WriteLine("└─────────────────────────┘");
         string inputMenu = null;
         int quant = 0;
         while (true)
@@ -404,13 +418,13 @@ public class OrderMethods
             newItems.Add(d.IdMenuNavigation.Name, d.Number);
         }
         Console.WriteLine("Order menu now:");
-        Console.WriteLine("======================");
+        Console.WriteLine("┌─────────────────────────┐");
         foreach (var d in dd)
         {
-            Console.WriteLine($"{d.IdMenuNavigation.Name} X  {d.Number}");
+            Console.WriteLine("│ {0,-10} │ {1,10} │", d.IdMenuNavigation.Name,d.Number);
         }
-        Console.WriteLine("======================");
-        Console.WriteLine();
+
+        Console.WriteLine("└─────────────────────────┘");
         dd.Clear();
         string upDish = null;
         int nquantity = 0;
@@ -471,13 +485,13 @@ public class OrderMethods
 
         dd.Clear();
         Console.WriteLine("Order menu now:");
-        Console.WriteLine("======================");
+        Console.WriteLine("┌─────────────────────────┐");
         foreach (var d in dishesInOrder)
         {
-            Console.WriteLine($"{d.Key} X  {d.Value}");
+            Console.WriteLine("│ {0,-10} │ {1,10} │", d.Key,d.Value);
         }
 
-        Console.WriteLine("======================");
+        Console.WriteLine("└─────────────────────────┘");
         string delDish = null;
         while (true)
         {

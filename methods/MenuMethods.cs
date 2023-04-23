@@ -1,4 +1,5 @@
-﻿using RestaurantAppOOP.control;
+﻿using ConsoleTableExt;
+using RestaurantAppOOP.control;
 using RestaurantAppOOP.models;
 
 namespace RestaurantAppOOP.methods;
@@ -10,12 +11,26 @@ public class MenuMethods
 
     public static void PrintAllItemMenu()
     {
-        var menu = mcontrol.AllItemsPrint();
-        Console.WriteLine("Available menu: ");
-        foreach (var itm in menu)
-        {
-            Console.WriteLine($" {itm.Name} - {itm.Description} - {itm.Cost} ");
-        }
+        var menu = mcontrol.AllItemsPrint()
+            .Select(m => new { Name = m.Name, Description = m.Description, Cost = m.Cost })
+            .ToList();
+        ConsoleTableBuilder.From(menu)
+            .WithCharMapDefinition(
+                CharMapDefinition.FramePipDefinition,
+                new Dictionary<HeaderCharMapPositions, char> {
+                    {HeaderCharMapPositions.TopLeft, '╒' },
+                    {HeaderCharMapPositions.TopCenter, '╤' },
+                    {HeaderCharMapPositions.TopRight, '╕' },
+                    {HeaderCharMapPositions.BottomLeft, '╞' },
+                    {HeaderCharMapPositions.BottomCenter, '╪' },
+                    {HeaderCharMapPositions.BottomRight, '╡' },
+                    {HeaderCharMapPositions.BorderTop, '═' },
+                    {HeaderCharMapPositions.BorderRight, '│' },
+                    {HeaderCharMapPositions.BorderBottom, '═' },
+                    {HeaderCharMapPositions.BorderLeft, '│' },
+                    {HeaderCharMapPositions.Divider, '│' },
+                })
+            .ExportAndWriteLine(TableAligntment.Left);
     }
 
     public static void ChangeTheCostOfItem()
@@ -24,6 +39,8 @@ public class MenuMethods
         int recost,dishID = 0;
         while (true)
         {
+            MenuMethods.PrintAllItemMenu();
+            Console.WriteLine();
             Console.Write("Enter the item name: ");
             try
             {
@@ -64,6 +81,7 @@ public class MenuMethods
             
         }
         mcontrol.ChangeCostOfItem(dishID,recost);
+        Console.Clear();
         Console.WriteLine("The price has been successfully changed.");
         
     }

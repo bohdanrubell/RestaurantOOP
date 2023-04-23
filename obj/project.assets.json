@@ -3605,11 +3605,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\RestaurantApp\\RestaurantOOP\\RestaurantAppOOP.csproj",
+      "projectUniqueName": "D:\\OOP\\RestaurantOOP\\RestaurantAppOOP.csproj",
       "projectName": "RestaurantAppOOP",
-      "projectPath": "D:\\RestaurantApp\\RestaurantOOP\\RestaurantAppOOP.csproj",
+      "projectPath": "D:\\OOP\\RestaurantOOP\\RestaurantAppOOP.csproj",
       "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "D:\\RestaurantApp\\RestaurantOOP\\obj\\",
+      "outputPath": "D:\\OOP\\RestaurantOOP\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
