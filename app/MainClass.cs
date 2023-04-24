@@ -30,7 +30,7 @@ public class MainClass
                     throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 choiceGeneral = 0;
                 Console.Clear();

@@ -18,7 +18,14 @@ namespace RestaurantAppOOP.dao
                 .Include(o => o.IdWaiterNavigation)
                 .Include(od => od.OrderedDishes)
                 .FirstOrDefault(i => i.Id == orderID);
-            return new List<Order> {orderGet};
+            if (orderGet == null)
+            {
+                throw new NullReferenceException();
+            }
+            else
+            {
+                return new List<Order> {orderGet};    
+            }
         }
 
         public void isNotOrder(int orderID)

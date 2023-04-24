@@ -58,6 +58,5 @@ public class WaiterDAO
         }
 
         _context.SaveChanges();
-        Console.WriteLine("Delete was completed.");
     }
 }

@@ -56,7 +56,7 @@ public class MenuMethods
             catch (ArgumentException e)
             {
                 Console.Clear();
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 continue;
             }
             
@@ -143,6 +143,7 @@ public class MenuMethods
         string name = null;
         while (loop)
         {
+            PrintAllItemMenu();
             Console.Write("Enter the name item: ");
             name = Console.ReadLine();
             if (mcontrol.AllItemsPrint().Any(itm => itm.Name == name))

@@ -52,6 +52,5 @@ public class MenuDAO
             _context.Menus.Remove(delMenu);
             _context.SaveChanges();
         }
-        Console.WriteLine("Delete item was completed.");
     }
 }

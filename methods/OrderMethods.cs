@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using ConsoleTableExt;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RestaurantAppOOP.control;
 using RestaurantAppOOP.db;
 using RestaurantAppOOP.models;
@@ -151,38 +152,61 @@ public class OrderMethods
 
     public static void PrintOrder()
     {
-        Console.Write("Order ID:"); // Вводимо ідентифікатор замовлення
-        int num = Convert.ToInt32(Console.ReadLine());
-        List<Order> orderP = new List<Order>();
-        orderP.AddRange(control.GetTheOrderForPrint(num)); // Створюємо тимчасове сховище для виведення інформаціі замовлвення
-        if (orderP == null)
+        int num = 0;
+        bool loop = true;
+        while (loop)
         {
-            Console.WriteLine("Order was not found!");
-            return;
+            Console.Write("Order ID:"); // Вводимо ідентифікатор замовлення
+            try
+            {
+                num = int.Parse(Console.ReadLine());
+                loop = false;
+            }
+            catch (Exception)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid format. Please, try again.");
+                continue;
+            }
+            List<Order> orderP = new List<Order>();
+             try
+                {
+                    orderP.AddRange(control.GetTheOrderForPrint(num));
+                }
+                catch (NullReferenceException e)
+                {
+                    Console.WriteLine($"Order #{num} didn't find.");
+                   continue;
+                }
+             // Створюємо тимчасове сховище для виведення інформаціі замовлвення
+                Console.WriteLine("┌─────────────────────────────────────────┐");
+                Console.WriteLine($"│{"ID Order:",-10}  {orderP[0].Id,29}│"); 
+                Console.WriteLine($"│{"Waiter:",-10} {orderP[0].IdWaiterNavigation.NameWaiter.Trim(),30}│");
+                Console.WriteLine($"│{"Date order:",-10} {orderP[0].DateOrder.ToString("dd-MM-yyyy"),29}│");
+
+                orderP.Clear();
+                Console.WriteLine("├──────────────────┬───────────┬──────────|");
+                Console.WriteLine("│      Name        | Quantity  |   Cost   │");
+                Console.WriteLine("┣──────────────────┼───────────┼──────────┨");
+
+                List<OrderedDish> dishesForPrint = new List<OrderedDish>();
+                dishesForPrint.AddRange(control.GetOrderedDishes(num));
+                foreach (var orderedDish in dishesForPrint)
+                {
+                    Console.WriteLine("│{0,18}│{1,11}│{2,10:F}│", orderedDish.IdMenuNavigation.Name, orderedDish.Number,
+                        (orderedDish.Number * orderedDish.IdMenuNavigation.Cost));
+                }
+                var total = dishesForPrint.Sum(od => od.Number * od.IdMenuNavigation.Cost);
+                Console.WriteLine("├──────────────────┴───────────┴──────────|");
+                Console.WriteLine("│Total amount                  {0,10:F} │", total);
+                Console.WriteLine("└─────────────────────────────────────────┘");
+                dishesForPrint.Clear();
+                loop = false;
         }
+        
+        
         //Виводимо інформацію в табличному вигляді
-        Console.WriteLine("┌─────────────────────────────────────────┐");
-        Console.WriteLine($"│{"ID Order:",-10}  {orderP[0].Id,29}│"); 
-        Console.WriteLine($"│{"Waiter:",-10} {orderP[0].IdWaiterNavigation.NameWaiter.Trim(),30}│");
-        Console.WriteLine($"│{"Date order:",-10} {orderP[0].DateOrder.ToString("dd-MM-yyyy"),29}│");
-
-        orderP.Clear();
-        Console.WriteLine("├──────────────────┬───────────┬──────────|");
-        Console.WriteLine("│      Name        | Quantity  |   Cost   │");
-        Console.WriteLine("┣──────────────────┼───────────┼──────────┨");
-
-        List<OrderedDish> dishesForPrint = new List<OrderedDish>();
-        dishesForPrint.AddRange(control.GetOrderedDishes(num));
-        foreach (var orderedDish in dishesForPrint)
-        {
-            Console.WriteLine("│{0,18}│{1,11}│{2,10:F}│", orderedDish.IdMenuNavigation.Name, orderedDish.Number,
-                (orderedDish.Number * orderedDish.IdMenuNavigation.Cost));
-        }
-        var total = dishesForPrint.Sum(od => od.Number * od.IdMenuNavigation.Cost);
-        Console.WriteLine("├──────────────────┴───────────┴──────────|");
-        Console.WriteLine("│Total amount                  {0,10:F} │", total);
-        Console.WriteLine("└─────────────────────────────────────────┘");
-        dishesForPrint.Clear();
+        
         // Виведення загальної суми замовлення
     } // Метод для виведення всієї інформації із замовлення + 
 
@@ -253,7 +277,7 @@ public class OrderMethods
             catch (InvalidOperationException e )
             {
                 Console.Clear();
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 continue;
             }
         }
