@@ -31,6 +31,7 @@ public class MenuMethods
                     {HeaderCharMapPositions.Divider, '│' },
                 })
             .ExportAndWriteLine(TableAligntment.Left);
+        Console.WriteLine($"Conuts of elements in menu: {menu.Count}");
     }
 
     public static void ChangeTheCostOfItem()

@@ -33,7 +33,9 @@ public class WaiterMethods
                     {HeaderCharMapPositions.Divider, '?' },
                 })
             .ExportAndWriteLine(TableAligntment.Left);
+        Console.WriteLine($"Count of waiters: {waiters.Count}");
         waiters.Clear();
+        
     }
     
     public static void CreateNewWaiter()

@@ -44,7 +44,7 @@ public class WaiterDAO
         _context.SaveChanges();
     }
 
-    public void Delete(string name)
+    public void Delete(string name) 
     {
         using var _context = new RestaurantContext();
         var nameWaiter = _context.Waiters.SingleOrDefault(wd => wd.NameWaiter == name);
